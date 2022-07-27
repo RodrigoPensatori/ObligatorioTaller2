@@ -2,6 +2,8 @@
 const URL_BASE = "https://crypto.develotion.com/";
 const URL_IMG = "https://crypto.develotion.com/imgs/"
 
+
+//FUNCIONES GENERALES
 function dqs(selector)
 {
     return document.querySelector(selector);
@@ -29,37 +31,57 @@ async function Alerta(header,msg) {
     await alert.present();
   }
 
+//---------//
+
+
+
 
 async function Login()
 {
     let Usr = document.querySelector("#UsrLogin").value;
     let Psw = document.querySelector("#UsrPsw").value;
 
-    try {
-        const res = await fetch(`${URL_BASE}login.php`,
+    if(Usr != '' && Psw !='')
     {
-        method:'POST',
-        headers:{
-            'Content-Type':'application/json',
-        },
-        body:JSON.stringify({
-            "usuario":Usr,
-            "password":Psw
-        })       
-    }) 
-    const resjson = await res.json(); 
-    
-    if(resjson.codigo == 200)
-    {
-        localStorage.setItem("ApiKey",resjson.apiKey);
-        Ocultar();
-        document.getElementById("Tab").classList.remove('ion-hide');
+        try {
+            const res = await fetch(`${URL_BASE}login.php`,
+        {
+            method:'POST',
+            headers:{
+                'Content-Type':'application/json',
+            },
+            body:JSON.stringify({
+                "usuario":Usr,
+                "password":Psw
+            })       
+        }) 
+        const resjson = await res.json(); 
         
-    }
-    } catch (error) {
-        console.log(error);
+        switch (resjson.codigo) {
+            case 200:
+                localStorage.setItem("ApiKey",resjson.apiKey);
+                Ocultar();
+                document.getElementById("Tab").classList.remove('ion-hide');
+                break;
+            case 409:
+                Alerta('Error','Usuario o Contraseña invalido.');
+
+            default:
+                Alerta('Error','Error Inesperado.')
+                break;
+        }
+
+        
+        } catch (error) {
+            console.log(error);
+        }
     }
 
+   
+    else
+    {
+        Alerta('Error','Ingrese Todos los Datos.')
+    }
 
 } 
 
@@ -133,7 +155,7 @@ async function CargarDepartamentos()
             dqs("#SelDep").innerHTML +=   `<ion-select-option value="${departamento.id}">${departamento.nombre}</ion-select-option>`
             
         });
-        //dqs('#SelDep').addEventListener('change',CargarDepartamentos())
+       
         
     }
     } catch (error) {
@@ -142,15 +164,6 @@ async function CargarDepartamentos()
 
     
 }
-
-
-
-async function CargarCiudades()
-{
-
-    
-}
-
 
 async function CrearUsr()
 {
