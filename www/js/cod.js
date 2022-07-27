@@ -1,6 +1,8 @@
 const URL_BASE = "https://crypto.develotion.com/";
 const URL_IMG = "https://crypto.develotion.com/imgs/";
 let UsuarioId = 0
+let monedas = []
+//import { loadingController, modalController, pickerController } from '@ionic/core';
 
 
 function dqs(selector) {
@@ -67,8 +69,9 @@ async function Login()
 				UsuarioId = resjson.id;
 				Ocultar();
 				document.getElementById("Tab").classList.remove("ion-hide");
-				CargarMonedas()
-				CargarTransaccionesUsuario()
+				await CargarMonedas()
+				await CargarTransaccionesUsuario()
+				await CargarComboMoneda()
                 break;
             case 409:
                 Alerta('Error','Usuario o Contraseña invalido.');
@@ -226,7 +229,16 @@ async function CrearUsr()
     
 } 
 
+async function CargarComboMoneda(){
+	console.log(`cargando combo monedas ${JSON.stringify(monedas)}`);
+	monedas.forEach(moneda => {
+		dqs("#slcMoneda").innerHTML +=   `<ion-select-option value="${moneda.id}">${moneda.nombre}</ion-select-option>`
+	});
+   
+}
+
 async function CargarTransaccionesUsuario() {
+	showLoading()
 	try {
 		const res = await fetch(`${URL_BASE}/transacciones.php?idUsuario=${UsuarioId}`, {
 			method: "GET",
@@ -239,8 +251,15 @@ async function CargarTransaccionesUsuario() {
 		console.log(resjson);
 		let listaTransacciones = ``
 		if (resjson.codigo == 200) {
+			//si el select tiene un filtro, hacer el filtro de la lista de transacciones
+			let transaccionesFiltradas = []
+			if (dqs("#slcMoneda").value) {
+				transaccionesFiltradas = resjson.transacciones.filter(transaccion=>transaccion.moneda == dqs("#slcMoneda").value)
+			}else{
+				transaccionesFiltradas = resjson.transacciones
+			}
 			
-			resjson.transacciones.forEach(transaccion => {
+			transaccionesFiltradas.forEach(transaccion => {
 				listaTransacciones += ` 
 						<ion-item>
 							<ion-label>
@@ -281,7 +300,6 @@ async function CargarTransaccionesUsuario() {
 
 
 async function CargarMonedas() {
-	console.log('asdasdasd')
 	try {
 		const res = await fetch(`${URL_BASE}monedas.php`, {
 			method: "GET",
@@ -294,6 +312,7 @@ async function CargarMonedas() {
 		console.log(resjson);
 		let listaMonedas = ``
 		if (resjson.codigo == 200) {
+			monedas = resjson.monedas
 			resjson.monedas.forEach(moneda => {
 				listaMonedas += ` 
 						<ion-item>
@@ -323,4 +342,10 @@ function CerrarSesion() {
 	document.getElementById("Tab").classList.add("ion-hide");
 	Ocultar()
 	Mostrar("#pantalla-login");
+}
+
+async function showLoading() {
+	const loading = dqs('#asd').present('asdasdsad')
+	  
+	loading.present();
 }
