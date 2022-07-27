@@ -1,25 +1,28 @@
-
 const URL_BASE = "https://crypto.develotion.com/";
-const URL_IMG = "https://crypto.develotion.com/imgs/"
+const URL_IMG = "https://crypto.develotion.com/imgs/";
+let UsuarioId = 0
 
 
-//FUNCIONES GENERALES
-function dqs(selector)
-{
-    return document.querySelector(selector);
+function dqs(selector) {
+	return document.querySelector(selector);
 }
 
-function Ocultar()
-{
-    dqs("#pantalla-login").style.display='none';
-    dqs("#registro").style.display='none';
+function Ocultar() {
+	dqs("#pantalla-login").style.display = "none";
+	dqs("#registro").style.display = "none";
 }
 
-function Mostrar(componente)
-{
-    dqs(componente).style.display='block';
+function Mostrar(componente) {
+	dqs(componente).style.display = "block";
 }
 
+
+function Registrarse() {
+	Ocultar();
+
+	CargarDepartamentos();
+	//CargarCiudad(id);
+}
 
 async function Alerta(header,msg) {
     const alert = document.createElement('ion-alert');
@@ -59,11 +62,13 @@ async function Login()
         
         switch (resjson.codigo) {
             case 200:
-              
-                localStorage.setItem("ApiKey",resjson.apiKey);
-                localStorage.setItem("UserId",resjson.id);
-                Ocultar();
-                document.getElementById("Tab").classList.remove('ion-hide');
+				localStorage.setItem("ApiKey", resjson.apiKey);
+                localStorage.setItem("UserId", resjson.id);
+				UsuarioId = resjson.id;
+				Ocultar();
+				document.getElementById("Tab").classList.remove("ion-hide");
+				CargarMonedas()
+				CargarTransaccionesUsuario()
                 break;
             case 409:
                 Alerta('Error','Usuario o Contraseña invalido.');
@@ -221,3 +226,101 @@ async function CrearUsr()
     
 } 
 
+async function CargarTransaccionesUsuario() {
+	try {
+		const res = await fetch(`${URL_BASE}/transacciones.php?idUsuario=${UsuarioId}`, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				"apikey":`${localStorage.getItem("ApiKey")}`
+			},
+		});
+		const resjson = await res.json();
+		console.log(resjson);
+		let listaTransacciones = ``
+		if (resjson.codigo == 200) {
+			
+			resjson.transacciones.forEach(transaccion => {
+				listaTransacciones += ` 
+						<ion-item>
+							<ion-label>
+								<div style="display:flex">
+									<div  style="width:80px">
+										<h2>Id</h2>
+										<p style="margin-left:5px;">${transaccion.id}</p>
+									</div>
+									<div  style="width:80px">
+										<h2>Tipo de Operacion</h2>
+										<p style="margin-left:5px;">${transaccion.tipo_operacion}</p>
+									</div>
+								</div>
+								<div style="display:flex"> 
+									<div style="width:80px">
+										<h2>moneda</h2>
+										<p style="margin-left:5px;">${transaccion.moneda}</p>
+									</div>
+									<div style="width:80px">
+										<h2>Cantidad</h2>
+										<p style="margin-left:5px;">${transaccion.cantidad}</p>
+									</div>
+									<div style="width:80px">
+										<h2>Valor actual</h2>
+										<p style="margin-left:5px;">${transaccion.valor_actual}</p>
+									</div>
+								</div>
+							</ion-label>
+						</ion-item>`
+			});
+		}
+
+		dqs('#listaTransacciones').innerHTML = listaTransacciones;
+	} catch (error) {
+		console.log(error);
+	}
+}
+
+
+async function CargarMonedas() {
+	console.log('asdasdasd')
+	try {
+		const res = await fetch(`${URL_BASE}monedas.php`, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				"apikey":`${localStorage.getItem("ApiKey")}`
+			},
+		});
+		const resjson = await res.json();
+		console.log(resjson);
+		let listaMonedas = ``
+		if (resjson.codigo == 200) {
+			resjson.monedas.forEach(moneda => {
+				listaMonedas += ` 
+						<ion-item>
+							<ion-avatar slot="start">
+								<img src="${URL_IMG}${moneda.imagen}" />
+							</ion-avatar>
+							<ion-label>
+								<h2>${moneda.nombre}</h2>
+								<div style="display:flex"> 
+									<h3>Cotizacion:</h3>
+									<p style="margin-left:5px;">${moneda.cotizacion}</p>
+								</div>
+							</ion-label>
+						</ion-item>`
+			});
+		}
+
+		dqs('#listaMonedas').innerHTML = listaMonedas;
+	} catch (error) {
+		console.log(error);
+	}
+}
+
+function CerrarSesion() {
+	console.log("Cerrar sesion");
+	localStorage.clear()
+	document.getElementById("Tab").classList.add("ion-hide");
+	Ocultar()
+	Mostrar("#pantalla-login");
+}
