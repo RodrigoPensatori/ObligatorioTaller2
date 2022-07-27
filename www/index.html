@@ -13,7 +13,6 @@
    
     <ion-app>
 
-    SEX
         <!--Pantalla Login-->
         <page-login class="ion-page" id="pantalla-login">
         
@@ -86,23 +85,35 @@
               <ion-header translucent>
                 <ion-toolbar>
                   <ion-title>Monedas</ion-title>
+				  
                 </ion-toolbar>
               </ion-header>
     
               <ion-content fullscreen class="ion-padding">
                 <h1>Monedas</h1>
+				<ion-list id="listaMonedas">
+				  
+				</ion-list>
               </ion-content>
             </ion-tab>
     
-            <ion-tab tab="Transacciones">
+            <ion-tab tab="Transacciones" >
               <ion-header translucent>
                 <ion-toolbar>
-                  <ion-title>Transacciones</ion-title>
+					<ion-buttons collapse="true">
+						<ion-button onclick="CerrarSesion()">
+							<ion-icon slot="icon-only" name="star"></ion-icon>
+						</ion-button>
+					</ion-buttons>
+                  	<ion-title>Transacciones</ion-title>
                 </ion-toolbar>
               </ion-header>
     
               <ion-content fullscreen class="ion-padding">
                 <h1>Transacciones</h1>
+				<ion-list id="listaTransacciones">
+				  
+				</ion-list>
               </ion-content>
             </ion-tab>
     
@@ -124,6 +135,7 @@
             </ion-tab>
         
             <ion-tab-bar slot="bottom">
+				
               <ion-tab-button tab="Monedas">
                 <ion-label>Monedas</ion-label>
                 <ion-icon name="logo-bitcoin"></ion-icon>
@@ -133,9 +145,9 @@
                 <ion-icon name="wallet"></ion-icon>
               </ion-tab-button>
               <ion-tab-button tab="Info">
-                <ion-label>Información</ion-label>
-                <ion-icon name="information-circle"></ion-icon>
-              </ion-tab-button>
+				  <ion-label>Información</ion-label>
+				  <ion-icon name="information-circle"></ion-icon>
+			</ion-tab-button>
             </ion-tab-bar>
           </ion-tabs>    
             
