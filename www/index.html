@@ -91,9 +91,7 @@
     
               <ion-content fullscreen class="ion-padding">
                 <h1>Monedas</h1>
-				<ion-list id="listaMonedas">
-				  
-				</ion-list>
+				<ion-list id="listaMonedas"></ion-list>
               </ion-content>
             </ion-tab>
     
@@ -111,9 +109,13 @@
     
               <ion-content fullscreen class="ion-padding">
                 <h1>Transacciones</h1>
-				<ion-list id="listaTransacciones">
-				  
-				</ion-list>
+				<div style="display: flex;">
+					<ion-select interface="popover" placeholder="Moneda" id="slcMoneda">
+						
+					</ion-select>
+					<ion-button onclick="CargarTransaccionesUsuario()" expand="full">Filtrar</ion-button>
+				</div>
+				<ion-list id="listaTransacciones"></ion-list>
               </ion-content>
             </ion-tab>
     
