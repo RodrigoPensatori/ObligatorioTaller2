@@ -59,13 +59,15 @@ async function Login()
         
         switch (resjson.codigo) {
             case 200:
+              
                 localStorage.setItem("ApiKey",resjson.apiKey);
+                localStorage.setItem("UserId",resjson.id);
                 Ocultar();
                 document.getElementById("Tab").classList.remove('ion-hide');
                 break;
             case 409:
                 Alerta('Error','Usuario o Contraseña invalido.');
-
+                break;
             default:
                 Alerta('Error','Error Inesperado.')
                 break;
@@ -194,11 +196,16 @@ async function CrearUsr()
         console.log(resjson);
         if(resjson.codigo == 200)
         {
+            
             localStorage.setItem("ApiKey",resjson.apiKey);
+            
             Ocultar();
             Mostrar('#pantalla-login');
-            document.getElementById("Tab").classList.remove('ion-hide');
             
+        }
+        else
+        {
+            Alerta('Error',resjson.mensaje);
         }
         } catch (error) {
             console.log(error);
