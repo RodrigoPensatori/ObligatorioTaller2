@@ -2,6 +2,7 @@ const URL_BASE = "https://crypto.develotion.com/";
 const URL_IMG = "https://crypto.develotion.com/imgs/";
 let UsuarioId = 0
 let monedas = []
+//import { loadingController, modalController, pickerController } from '@ionic/core';
 
 
 function dqs(selector) {
@@ -231,6 +232,7 @@ async function CargarComboMoneda(){
 }
 
 async function CargarTransaccionesUsuario() {
+	showLoading()
 	try {
 		const res = await fetch(`${URL_BASE}/transacciones.php?idUsuario=${UsuarioId}`, {
 			method: "GET",
@@ -334,4 +336,10 @@ function CerrarSesion() {
 	document.getElementById("Tab").classList.add("ion-hide");
 	Ocultar()
 	Mostrar("#pantalla-login");
+}
+
+async function showLoading() {
+	const loading = dqs('#asd').present('asdasdsad')
+	  
+	loading.present();
 }
