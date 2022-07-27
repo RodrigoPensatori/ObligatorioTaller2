@@ -19,6 +19,17 @@ function Mostrar(componente)
 }
 
 
+async function Alerta(header,msg) {
+    const alert = document.createElement('ion-alert');
+    alert.header = header;
+    alert.message = msg;
+    alert.buttons = ['OK'];
+
+    document.body.appendChild(alert);
+    await alert.present();
+  }
+
+
 async function Login()
 {
     let Usr = document.querySelector("#UsrLogin").value;
@@ -49,11 +60,6 @@ async function Login()
         console.log(error);
     }
 
-    
-    
-    
-
-
 
 } 
 
@@ -63,7 +69,43 @@ function Registrarse()
     Ocultar();
 
     CargarDepartamentos();
-    //CargarCiudad(id);
+    dqs('#SelDep').addEventListener('click',async ()=>{
+        
+        dqs('#SelCiudad').innerHTML = '';
+    })
+
+    dqs('#SelCiudad').addEventListener('click',async ()=>{
+
+        try {
+            dqs("#SelCiudad").innerHTML ='';
+            let id = dqs('#SelDep').value;
+            
+            const res = await fetch(`${URL_BASE}ciudades.php?idDepartamento=${id}`,
+        {
+            method:'GET',
+            headers:{
+                'Content-Type':'application/json',
+            },
+                   
+        }) 
+        const resjson = await res.json(); 
+        console.log(resjson);
+        if(resjson.codigo == 200)
+        {
+            
+            resjson.ciudades.forEach(ciudades => {
+                
+                dqs("#SelCiudad").innerHTML +=   `<ion-select-option value="${ciudades.id}">${ciudades.nombre}</ion-select-option>`
+                
+            });
+            
+            
+        }
+        } catch (error) {
+            console.log(error);
+        }
+    
+    })
 
     Mostrar('#registro');
 } 
@@ -103,34 +145,8 @@ async function CargarDepartamentos()
 
 
 
-async function CargarDepartamentos(id)
+async function CargarCiudades()
 {
-
-    try {
-        const res = await fetch(`${URL_BASE}ciudades.php?idDepartamento=${id}`,
-    {
-        method:'GET',
-        headers:{
-            'Content-Type':'application/json',
-        },
-               
-    }) 
-    const resjson = await res.json(); 
-    console.log(resjson);
-    if(resjson.codigo == 200)
-    {
-        
-        resjson.ciudades.forEach(ciudades => {
-            
-            dqs("#SelCiudad").innerHTML +=   `<ion-select-option value="${ciudad.id}">${ciudad.nombre}</ion-select-option>`
-            
-        });
-        
-        
-    }
-    } catch (error) {
-        console.log(error);
-    }
 
     
 }
@@ -138,42 +154,50 @@ async function CargarDepartamentos(id)
 
 async function CrearUsr()
 {
-   
-    
 
-    let Usr = document.querySelector("#RegUsr").value;
-    let Psw = document.querySelector("#RegPsw").value;
-    let Departamento = document.querySelector("#RegDep").value;
-    let City = document.querySelector("#RegCiudad").value;
+    let Usr = dqs("#RegUsr").value;
+    let Psw = dqs("#RegPsw").value;
+    let Departamento = dqs("#SelDep").value;
+    let City = dqs("#SelCiudad").value;
     
-
-    try {
-        const res = await fetch(`${URL_BASE}usuarios.php`,
+    
+    if(Usr !='' && Psw !='' && Departamento != undefined && City != undefined )
     {
-        method:'POST',
-        headers:{
-            'Content-Type':'application/json',
-        },
-        body:JSON.stringify({
-            "usuario":Usr,
-            "password":Psw,
-            "idDepartamento":1
-        })       
-    }) 
-    const resjson = await res.json(); 
-    console.log(resjson);
-    if(resjson.codigo == 200)
-    {
-        localStorage.setItem("ApiKey",resjson.apiKey);
-        Ocultar();
-        document.getElementById("Tab").classList.remove('ion-hide');
+        try {
+            const res = await fetch(`${URL_BASE}usuarios.php`,
+        {
+            method:'POST',
+            headers:{
+                'Content-Type':'application/json',
+            },
+            body:JSON.stringify({
+                "usuario":Usr,
+                "password":Psw,
+                "idDepartamento":Departamento,
+                "idCiudad":City
+            })       
+        }) 
+        const resjson = await res.json(); 
+        console.log(resjson);
+        if(resjson.codigo == 200)
+        {
+            localStorage.setItem("ApiKey",resjson.apiKey);
+            Ocultar();
+            Mostrar('#pantalla-login');
+            document.getElementById("Tab").classList.remove('ion-hide');
+            
+        }
+        } catch (error) {
+            console.log(error);
+        }
+    
         
     }
-    } catch (error) {
-        console.log(error);
+    else
+    {
+        Alerta('Error','Ingrese Todos los Datos');
     }
 
-    Ocultar();
-    Mostrar('#pantalla-login');
+    
 } 
 
