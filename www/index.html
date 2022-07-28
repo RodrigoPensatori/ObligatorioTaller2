@@ -1,162 +1,221 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demo Ionic</title>
+    <title>Document</title>
     <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
-	<script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
-	<link href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" rel="stylesheet">
-</head>
-<body>
-   
-    <ion-app>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" />
 
-        <!--Pantalla Login-->
-        <page-login class="ion-page" id="pantalla-login">
-        
+	<script type="module">
+		import { toastController } from 'https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/index.esm.js';
+		window.toastController = toastController;
+	</script>
+</head>
+
+<body>
+    <ion-app>
+        <!-- RUTEO -->
+        <ion-router id="ruteo">
+            <ion-route url="/" component="page-home"></ion-route>
+            <ion-route url="/login" component="page-login"></ion-route>
+            <ion-route url="/registro" component="page-registro"></ion-route>
+            <ion-route url="/monedas" component="page-monedas"></ion-route>
+			<ion-route url="/transacciones" component="page-transacciones"></ion-route>
+            <ion-route url="/info" component="page-info"></ion-route>
+        </ion-router>
+        <ion-nav></ion-nav>
+        <!-- MENU -->
+        <ion-menu side="start" menu-id="first" content-id="main" id="menu">
+            <ion-header>
+                <ion-toolbar color="primary">
+                    <ion-title>Menú</ion-title>
+                </ion-toolbar>
+            </ion-header>
+            <ion-content>
+                <ion-list id="menu-opciones">
+                  
+                   
+                </ion-list>
+            </ion-content>
+        </ion-menu>
+        <div id="main"></div>
+
+        <!-- Pantallas -->
+        <page-home class="ion-page" id="pantalla-home">
             <ion-header>
                 <ion-toolbar>
+                    <ion-buttons slot="start">
+                        <ion-menu-button></ion-menu-button>
+                    </ion-buttons>
+                    <ion-title>Home</ion-title>
+                </ion-toolbar>
+            </ion-header>
+
+            <ion-content class="ion-padding">
+                <h1>Pagina de home</h1>
+            </ion-content>
+        </page-home>
+
+		 <!--Pantalla Login-->
+        <page-login class="ion-page" id="pantalla-login">
+            <ion-header>
+                <ion-toolbar>
+                    <ion-buttons slot="start">
+                        <ion-menu-button></ion-menu-button>
+                    </ion-buttons>
                     <ion-title>Login</ion-title>
                 </ion-toolbar>
             </ion-header>
-            
-                <ion-content class="ion-padding">
-                    
-                    <ion-item>
-                        <ion-label position="floating">Usuario</ion-label>
-                        <ion-input id="UsrLogin"></ion-input>
-                    </ion-item>
-                    <ion-item>
-                        <ion-label position="floating">Password</ion-label>
-                        <ion-input type="password" id="UsrPsw"></ion-input>
-                    </ion-item>
-                    
-                    <ion-button class="ion-margin" onclick="Login()" expand="full">Login</ion-button>
-                    <ion-button class="ion-margin" color="success" onclick="Registrarse()" expand="full">Registrarse</ion-button>
 
-
-
-                </ion-content>
-        
+            <ion-content class="ion-padding">
+                <ion-item>
+					<ion-label position="floating">Usuario</ion-label>
+					<ion-input id="txtUsuario"></ion-input>
+				</ion-item>
+				<ion-item>
+					<ion-label position="floating">Password</ion-label>
+					<ion-input type="password" id="txtPassword"></ion-input>
+				</ion-item>
+				
+				<ion-button class="ion-margin" id="btn-login"expand="full">Login</ion-button>
+				<ion-button class="ion-margin" color="success" onclick="Registrarse()" expand="full">Registrarse</ion-button>
+            </ion-content>
         </page-login>
-        
-        <!--Pantalla Registro-->
-        <page-registro id="registro" style="display: none;"> 
-            <ion-item>
-                <ion-label position="floating">Usuario</ion-label>
-                <ion-input id="RegUsr"></ion-input>
-            </ion-item>
-            
-            <ion-item>
-                <ion-label position="floating">Password</ion-label>
-                <ion-input type="password" id="RegPsw"></ion-input>
-            </ion-item>
-            
-            <ion-item >
-               
-                <ion-label>Departamento</ion-label>
-                <ion-select interface="popover" placeholder="Departamento" id="SelDep">
-     
-                </ion-select>
-               
-            </ion-item>
-            
-            <ion-item>
-                <ion-label position="floating">Ciudad</ion-label>
-                
-                <ion-select interface="popover" placeholder="Ciudad" id="SelCiudad">
-                    
-                  
-                </ion-select>
-            
-            </ion-item>
 
-            <ion-button class="ion-margin" onclick="CrearUsr()" expand="full">Registrarse</ion-button>
 
+		<!--Pantalla Registro-->
+        <page-registro id="pantalla-registro" class="ion-page" > 
+			<ion-header>
+                <ion-toolbar>
+                    <ion-buttons slot="start">
+                        <ion-menu-button></ion-menu-button>
+                    </ion-buttons>
+                    <ion-title>Registro</ion-title>
+                </ion-toolbar>
+            </ion-header>
+
+			<ion-content class="ion-padding">
+				<ion-item>
+					<ion-label position="floating">Usuario</ion-label>
+					<ion-input id="txtUser"></ion-input>
+				</ion-item>
+				
+				<ion-item>
+					<ion-label position="floating">Password</ion-label>
+					<ion-input type="password" id="txtPass"></ion-input>
+				</ion-item>
+				
+				<ion-item >
+				
+					<ion-label>Departamento</ion-label>
+					<ion-select interface="popover" placeholder="Departamento" id="SelDep">
+		
+					</ion-select>
+				
+				</ion-item>
+				
+				<ion-item>
+					<ion-label position="floating">Ciudad</ion-label>
+					
+					<ion-select interface="popover" placeholder="Ciudad" id="SelCiudad">
+						
+					
+					</ion-select>
+				
+				</ion-item>
+
+				<ion-button class="ion-margin" id="btnRegistrarse" expand="full">Registrarse</ion-button>
+			</ion-content>
         </page-registro>
 
 		<ion-loading id="asd"></ion-loading>
 
-        <!--TABS-->
-       
-        <ion-tabs id="Tab" class="ion-hide">
-            <ion-tab tab="Monedas">
-              <ion-header translucent>
+        <page-monedas class="ion-page" id="pantalla-monedas">
+            <ion-header>
                 <ion-toolbar>
-                  <ion-title>Monedas</ion-title>
-				  
+                    <ion-buttons slot="start">
+                        <ion-menu-button></ion-menu-button>
+                    </ion-buttons>
+                    <ion-title>Monedas</ion-title>
                 </ion-toolbar>
-              </ion-header>
-    
-              <ion-content fullscreen class="ion-padding">
-                <h1>Monedas</h1>
+            </ion-header>
+
+            <ion-content class="ion-padding">
 				<ion-list id="listaMonedas"></ion-list>
-              </ion-content>
-            </ion-tab>
-    
-            <ion-tab tab="Transacciones" >
-              <ion-header translucent>
+            </ion-content>
+        </page-monedas>
+
+
+		<page-transacciones class="ion-page" id="pantalla-transacciones">
+            <ion-header>
                 <ion-toolbar>
-					<ion-buttons collapse="true">
-						<ion-button onclick="CerrarSesion()">
-							<ion-icon slot="icon-only" name="star"></ion-icon>
-						</ion-button>
-					</ion-buttons>
-                  	<ion-title>Transacciones</ion-title>
+                    <ion-buttons slot="start">
+                        <ion-menu-button></ion-menu-button>
+                    </ion-buttons>
+					<ion-buttons slot="end">
+                        <ion-button onclick="CrearTransaccion()" >Nueva Transacción</ion-button>
+                    </ion-buttons>
+                    <ion-title>Transacciones</ion-title>
                 </ion-toolbar>
-              </ion-header>
-    
-              <ion-content fullscreen class="ion-padding">
-                <h1>Transacciones</h1>
+
+            </ion-header>
+
+            <ion-content class="ion-padding">
 				<div style="display: flex;">
 					<ion-select interface="popover" placeholder="Moneda" id="slcMoneda"></ion-select>
 					<ion-button onclick="CargarTransaccionesUsuario()" expand="full">Filtrar</ion-button>
 				</div>
 				<ion-list id="listaTransacciones"></ion-list>
-              </ion-content>
-            </ion-tab>
-    
-            <ion-tab tab="Info">
-              <ion-header translucent>
+
+               <ion-modal trigger="open-modal">
+                <ion-header>
+                  <ion-toolbar>
+                    <ion-buttons slot="start">
+                      <ion-button onclick="cancel()">Cancelar</ion-button>
+                    </ion-buttons>
+                    <ion-title>Crear transacción</ion-title>
+                    <ion-buttons slot="end">
+                      <ion-button onclick="confirm()" strong="true">Confirmar</ion-button>
+                    </ion-buttons>
+                  </ion-toolbar>
+                </ion-header>
+                <ion-content class="ion-padding">
+                  <ion-item>
+                    <ion-label position="stacked">Tipo de Operación</ion-label>
+                    <ion-select placeholder="Tipo de Operación" id="SelTipoOperacion">
+					  <ion-select-option value="1">Compra</ion-select-option>
+					  <ion-select-option value="2">Venta</ion-select-option>
+					</ion-select>
+                  </ion-item>
+                </ion-content>
+              </ion-modal>
+            </ion-content>
+        </page-transacciones>
+
+		<page-info class="ion-page" id="pantalla-info">
+            <ion-header>
                 <ion-toolbar>
-                  <ion-title>Info</ion-title>
+                    <ion-buttons slot="start">
+                        <ion-menu-button></ion-menu-button>
+                    </ion-buttons>
+                    <ion-title>Info</ion-title>
                 </ion-toolbar>
-              </ion-header>
-    
-              <ion-content fullscreen class="ion-padding">
-                <h1>Info</h1>
+            </ion-header>
+
+            <ion-content class="ion-padding">
+				<h1>Info</h1>
                 <ion-button class="ion-margin" onclick="VerMontoFinal()" expand="full">Monto Final de  Inversiones</ion-button>
                 <ion-button class="ion-margin" color="tertiary" onclick="UsuariosByDepartamento()" expand="full">Usuarios por Departamentos</ion-button>
                 <ion-button class="ion-margin" color="success" onclick="VerMontoByMoneda()" expand="full">Montos por Moneda</ion-button>
+            </ion-content>
+        </page-info>
 
-
-              </ion-content>
-            </ion-tab>
-        
-            <ion-tab-bar slot="bottom">
-				
-              <ion-tab-button tab="Monedas">
-                <ion-label>Monedas</ion-label>
-                <ion-icon name="logo-bitcoin"></ion-icon>
-              </ion-tab-button>
-              <ion-tab-button tab="Transacciones">
-                <ion-label>Transacciones</ion-label>
-                <ion-icon name="wallet"></ion-icon>
-              </ion-tab-button>
-              <ion-tab-button tab="Info">
-				  <ion-label>Información</ion-label>
-				  <ion-icon name="information-circle"></ion-icon>
-			</ion-tab-button>
-            </ion-tab-bar>
-          </ion-tabs>    
-            
-        
-      </ion-app>
-   
-   
-   
-    <script src="js/cod.js"></script>
+    </ion-app>
+    <script src="js/codigo.js"></script>
 </body>
+
 </html>
