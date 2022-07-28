@@ -69,7 +69,7 @@ async function Loguear(usuario, password) {
 				localStorage.setItem("ApiKey", resjson.apiKey);
 				localStorage.setItem("UsuarioId", resjson.id);
 				ArmarMenuOpciones();
-				await toast('success','Logeado con exito.')
+				await toast('success','Logeado con éxito.')
 				NAV.push("page-monedas");
                 break;
             case 409:
@@ -190,7 +190,8 @@ async function verPantallaMonedas() {
 async function verPantallaTransacciones() {
 	await CargarMonedas()
 	await CargarTransaccionesUsuario()
-	await CargarComboMoneda()
+	await CargarComboMoneda('slcMoneda')
+	await CargarComboMoneda('slcMonedaNuevaTransaccion')
 }
 
 
@@ -215,18 +216,6 @@ async function toast(color,msg) {
 	await toast.present();
 }
 
-
-/*MODAL */
-let modal = document.querySelector("ion-modal");
-
-
-function cancel() {
-  modal.dismiss(null, "cancel");
-}
-
-function CrearTransaccion() {
-	modal.present();
-}
 
 
 async function CargarMonedas() {
@@ -332,7 +321,7 @@ async function CrearUsr()
         console.log(resjson);
         if(resjson.codigo == 200)
         {
-            toast("success",'Usuario creado con exito.');
+            toast("success",'Usuario creado con éxito.');
 			NAV.push('page-login')
         }
         } catch (error) {
@@ -350,10 +339,11 @@ async function CrearUsr()
 } 
 
 
-async function CargarComboMoneda(){
+async function CargarComboMoneda(slc){
 	console.log(`cargando combo monedas ${JSON.stringify(arrMonedas)}`);
+	dqs(slc).innerHTML = ``;
 	arrMonedas.forEach(moneda => {
-		dqs("slcMoneda").innerHTML +=   `<ion-select-option value="${moneda.id}">${moneda.nombre}</ion-select-option>`
+		dqs(slc).innerHTML +=   `<ion-select-option value="${moneda.id}">${moneda.nombre} $${moneda.cotizacion}</ion-select-option>`
 	});
 }
 
@@ -384,25 +374,25 @@ async function CargarTransaccionesUsuario() {
 						<ion-item>
 							<ion-label>
 								<div style="display:flex">
-									<div  style="width:100px">
+									<div  style="width:110px">
 										<h2>Id</h2>
 										<p style="margin-left:5px;">${transaccion.id}</p>
 									</div>
-									<div  style="width:100px">
+									<div  style="width:110px">
 										<h2>Tipo de Operacion</h2>
 										<p style="margin-left:5px;">#${transaccion.tipo_operacion} ${transaccion.tipo_operacion == 1 ? 'Compra' : 'Venta'}</p>
 									</div>
 								</div>
 								<div style="display:flex"> 
-									<div style="width:100px">
+									<div style="width:110px">
 										<h2>Moneda</h2>
 										<p style="margin-left:5px;">#${transaccion.moneda} ${arrMonedas.filter(moneda=>moneda.id == transaccion.moneda)[0]?.nombre}</p>
 									</div>
-									<div style="width:100px">
+									<div style="width:110px">
 										<h2>Cantidad</h2>
 										<p style="margin-left:5px;">${transaccion.cantidad}</p>
 									</div>
-									<div style="width:100px">
+									<div style="width:110px">
 										<h2>Valor actual</h2>
 										<p style="margin-left:5px;">${transaccion.valor_actual}</p>
 									</div>
@@ -416,5 +406,60 @@ async function CargarTransaccionesUsuario() {
 	} catch (error) {
 		console.log(error);
 	}
+}
+
+
+/*MODAL */
+let modal = document.querySelector("ion-modal");
+
+
+function cancel() {
+  modal.dismiss(null, "cancel");
+}
+
+function CrearTransaccion() {
+	modal.present();
+}
+
+async function confirm() {
+	//dqs de formulario y confirmar
+	let tipoOperacion = dqs("SelTipoOperacion").value;
+	let monedaNuevaTransaccion = dqs("slcMonedaNuevaTransaccion").value;
+	let cantidad = dqs("txtCantidad").value;
+
+	
+	if (tipoOperacion && monedaNuevaTransaccion && cantidad) {
+		const dto = new Object()
+		dto.idUsuario = localStorage.getItem("UsuarioId");
+		dto.tipoOperacion = tipoOperacion
+		dto.moneda = monedaNuevaTransaccion
+		dto.cantidad = cantidad
+		dto.tipoOperacion = tipoOperacion
+		dto.valorActual = arrMonedas.filter(moneda=>moneda.id == monedaNuevaTransaccion)[0]?.cotizacion
+
+		try {
+            const res = await fetch(`${URL_BASE}transacciones.php`,
+        {
+            method:'POST',
+            headers:{
+                'Content-Type':'application/json',
+				"apikey":`${localStorage.getItem("ApiKey")}`
+            },
+            body:JSON.stringify(dto)       
+        }) 
+        const resjson = await res.json(); 
+        console.log(resjson);
+        if(resjson.codigo == 200)
+        {
+            toast("success",'Transacción creada con éxito.');
+			modal.dismiss()
+        }
+        } catch (error) {
+            console.log(error);
+        }
+    }else{
+        Alerta('Error','Ingrese Todos los Datos');
+    }
+
 }
 
