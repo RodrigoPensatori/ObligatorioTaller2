@@ -565,8 +565,7 @@ async function CargarUsrDepartamentos()
 
 async function MostrarMontoPorMoneda()
 {
-	//await CargarMonedas();
-	let Card = '';	
+	
 	await CargarTransaccionesUsuario();
 	dqs('ListaMonedas').innerHTML = '';
 	console.log(arrMonedas)
