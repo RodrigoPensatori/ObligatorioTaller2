@@ -473,7 +473,7 @@ async function confirm() {
 
 async function MostrarMapaUsr()
 {
-	const departamentos = await getDepartamentos();
+	await CargarDepartamentos()
 	console.log(`departamentos: ${JSON.stringify(departamentos)}`);
 
 	var map = L.map('mapa').setView([-34.90364050627812, -56.190527957423214], 13);
@@ -496,17 +496,6 @@ function VerMontoFinal()
 	dqs("TituloInfo").innerHTML = 'Monto Final de Inversiones';
 }
 
-async function getDepartamentos() {
-	try {
-		const res = await fetch(`${URL_BASE}departamentos.php`);
-		const resjson = await res.json();
-		console.log(resjson);
-		if (resjson.codigo == 200) {
-			return resjson.departamentos
-		}
-	} catch (error) {
-		console.log(error);
-	}
 
 	return []
 }
