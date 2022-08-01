@@ -9,6 +9,7 @@ const MONEDAS = document.querySelector("#pantalla-monedas");
 const TRANSACCIONES = document.querySelector("#pantalla-transacciones");
 const INFO = document.querySelector("#pantalla-info");
 const NAV = document.querySelector("ion-nav");
+const MAPAUSR = document.querySelector("#MapaUsr");
 let arrMonedas = [];
 
 Inicio();
@@ -120,7 +121,13 @@ async function Navegar(evt) {
   }else if (ruta == "/info") {
 	//await verPantallaTransacciones()
     INFO.style.display = "block";
+  }else if(ruta == '/info/mapausr')
+  {
+	MostrarMapaUsr();
+	MAPAUSR.style.display = 'block';
+
   }
+
 
 }
 
@@ -131,6 +138,7 @@ function OcultarPantallas() {
 	MONEDAS.style.display = "none";
 	TRANSACCIONES.style.display = "none";
 	INFO.style.display = "none";
+	MAPAUSR.style.display='none';
 }
   
 function cerrarMenu() {
@@ -463,3 +471,21 @@ async function confirm() {
 
 }
 
+function MostrarMapaUsr()
+{
+	var map = L.map('mapa').setView([-34.90364050627812, -56.190527957423214], 13);
+
+	L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+		attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+	}).addTo(map);
+
+	L.marker([51.5, -0.09]).addTo(map)
+		.bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
+		.openPopup();
+}
+
+
+function VerMontoFinal()
+{
+	dqs("TituloInfo").innerHTML = 'Monto Final de Inversiones';
+}

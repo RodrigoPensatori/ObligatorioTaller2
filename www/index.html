@@ -9,7 +9,8 @@
     <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
     <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" />
-
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css" integrity="sha512-hoalWLoI8r4UszCkZ5kL8vayOGVae1oxXe/2A4AO6J9+580uKHDO3JdHb7NzwwzK5xr/Fs0W40kiNHxM9vyTtQ==" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js" integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ==" crossorigin=""></script>
 	<script type="module">
 		import { toastController } from 'https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/index.esm.js';
 		window.toastController = toastController;
@@ -26,6 +27,7 @@
             <ion-route url="/monedas" component="page-monedas"></ion-route>
 			<ion-route url="/transacciones" component="page-transacciones"></ion-route>
             <ion-route url="/info" component="page-info"></ion-route>
+            <ion-route url="/info/mapausr" component="page-mapausr"></ion-route>
         </ion-router>
         <ion-nav></ion-nav>
         <!-- MENU -->
@@ -217,10 +219,27 @@
             <ion-content class="ion-padding">
 				<h1>Info</h1>
                 <ion-button class="ion-margin" onclick="VerMontoFinal()" expand="full">Monto Final de  Inversiones</ion-button>
-                <ion-button class="ion-margin" color="tertiary" onclick="UsuariosByDepartamento()" expand="full">Usuarios por Departamentos</ion-button>
+                <ion-button class="ion-margin" color="tertiary" href="/info/mapausr" expand="full">Usuarios por Departamentos</ion-button>
                 <ion-button class="ion-margin" color="success" onclick="VerMontoByMoneda()" expand="full">Montos por Moneda</ion-button>
             </ion-content>
+        
+            <ion-content id="Info">
+                <h1 id="TituloInfo">A</h1>
+                <ion-item id="Pepe">
+
+                </ion-item>
+            </ion-content>
         </page-info>
+
+        <page-mapausr class="ion-page" id="MapaUsr">
+            <ion-content>
+                <div id="mapa" style=" height: 300px;">
+
+                </div>
+            </ion-content>
+        </page-mapausr>
+
+        
 
     </ion-app>
     <script src="js/codigo.js"></script>
