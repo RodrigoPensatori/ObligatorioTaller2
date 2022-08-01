@@ -477,6 +477,9 @@ async function confirm() {
         {
             toast("success",'Transacción creada con éxito.');
 			modal.dismiss()
+			dqs('listaTransacciones').innerHTML = '';
+			CargarTransaccionesUsuario();
+
         }
         } catch (error) {
             console.log(error);
@@ -518,6 +521,7 @@ async function MostrarMapaUsr()
 
 async function MostrarMontoFinal()
 {
+	dqs("MontoFinalTitulo").innerHTML = '';
 	await CargarTransaccionesUsuario();
 	let MontoFinal = 0;
 	transaccionesUsr.forEach(transaccion => {
@@ -531,7 +535,7 @@ async function MostrarMontoFinal()
 		}
 	});
 
-	dqs("MontoFinalTitulo").innerHTML += ' '+MontoFinal;
+	dqs("MontoFinalTitulo").innerHTML += ' Monto Final : '+MontoFinal;
 }
 
 async function CargarUsrDepartamentos()
