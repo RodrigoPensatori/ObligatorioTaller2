@@ -10,6 +10,7 @@ const TRANSACCIONES = document.querySelector("#pantalla-transacciones");
 const INFO = document.querySelector("#pantalla-info");
 const NAV = document.querySelector("ion-nav");
 const MAPAUSR = document.querySelector("#MapaUsr");
+let arrDepartamentos = [];
 let arrMonedas = [];
 
 Inicio();
@@ -282,7 +283,7 @@ async function CargarDepartamentos()
     console.log(resjson);
     if(resjson.codigo == 200)
     {
-        
+        arrDepartamentos = resjson.departamentos 
         resjson.departamentos.forEach(departamento => {
             
             dqs("SelDep").innerHTML +=   `<ion-select-option value="${departamento.id}">${departamento.nombre}</ion-select-option>`
