@@ -10,9 +10,11 @@ const TRANSACCIONES = document.querySelector("#pantalla-transacciones");
 const INFO = document.querySelector("#pantalla-info");
 const NAV = document.querySelector("ion-nav");
 const MAPAUSR = document.querySelector("#MapaUsr");
+const MONTOFINAL = document.querySelector('#MontoFinal');
+const MONTOPORMONEDA = document.querySelector('#montopormoneda');
 let arrDepartamentos = [];
 let arrMonedas = [];
-
+let transaccionesUsr = [];
 Inicio();
 
 function Inicio() {
@@ -126,7 +128,17 @@ async function Navegar(evt) {
   {
 	MostrarMapaUsr();
 	MAPAUSR.style.display = 'block';
-
+  }else if (ruta=='/info/montofinal')
+  {
+	await MostrarMontoFinal();
+	MONTOFINAL.style.display = 'block';
+  }
+  else if (ruta == '/info/montopormoneda')
+  {
+	
+	await MostrarMontoPorMoneda();
+	MONTOPORMONEDA.style.display='block'
+	
   }
 
 
@@ -140,6 +152,8 @@ function OcultarPantallas() {
 	TRANSACCIONES.style.display = "none";
 	INFO.style.display = "none";
 	MAPAUSR.style.display='none';
+	MONTOFINAL.style.display='none';
+	MONTOPORMONEDA.style.display = 'none';
 }
   
 function cerrarMenu() {
@@ -372,7 +386,8 @@ async function CargarTransaccionesUsuario() {
 		if (resjson.codigo == 200) {
 			//si el select tiene un filtro, hacer el filtro de la lista de transacciones
 			let transaccionesFiltradas = []
-			if (dqs("slcMoneda").value) {
+			transaccionesUsr = resjson.transacciones;
+			if (dqs("slcMoneda")?.value) {
 				transaccionesFiltradas = resjson.transacciones.filter(transaccion=>transaccion.moneda == dqs("slcMoneda").value)
 			}else{
 				transaccionesFiltradas = resjson.transacciones
@@ -475,27 +490,111 @@ async function confirm() {
 async function MostrarMapaUsr()
 {
 	await CargarDepartamentos()
-	console.log(`departamentos: ${JSON.stringify(departamentos)}`);
+	const usuarios = await CargarUsrDepartamentos();
+	
 
-	var map = L.map('mapa').setView([-34.90364050627812, -56.190527957423214], 13);
+
+	var map = L.map('mapa').setView([-34.90364050627812, -56.190527957423214], 7);
 
 	L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 		attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 		maxZoom: 19
 	}).addTo(map);
 
-	L.marker([-34.90364050627812, -56.190527957423214]).addTo(map)
-		.bindPopup('12')
+	arrDepartamentos.forEach(departamento => {
+		const cantUsr = usuarios.filter(usuario => usuario.id ==departamento.id)[0].cantidad_de_usuarios
+		L.marker([departamento.latitud, departamento.longitud]).addTo(map)
+		.bindPopup(`Departamento ${departamento.nombre} tiene ${cantUsr} Usuarios.`)
 		.openPopup(); 
+	});
+
+	
 
 
 }
 
 
-function VerMontoFinal()
+
+
+async function MostrarMontoFinal()
 {
-	dqs("TituloInfo").innerHTML = 'Monto Final de Inversiones';
+	await CargarTransaccionesUsuario();
+	let MontoFinal = 0;
+	transaccionesUsr.forEach(transaccion => {
+		if(transaccion.tipo_operacion == 1)
+		{
+			MontoFinal -= (transaccion.cantidad * transaccion.valor_actual);
+		}
+		else
+		{
+			MontoFinal += (transaccion.cantidad * transaccion.valor_actual);
+		}
+	});
+
+	dqs("MontoFinalTitulo").innerHTML += ' '+MontoFinal;
+}
+
+async function CargarUsrDepartamentos()
+{
+
+    try {
+        const res = await fetch(`${URL_BASE}usuariosPorDepartamento.php`,
+    {
+        method:'GET',
+        headers:{
+            'Content-Type':'application/json',
+			"apikey":`${localStorage.getItem("ApiKey")}`
+        },
+               
+    }) 
+    const resjson = await res.json(); 
+    console.log(resjson);
+    if(resjson.codigo == 200)
+    {
+       
+       return resjson.departamentos;
+        
+    }
+    } catch (error) {
+        console.log(error);
+    }
+	return []
+
 }
 
 
+async function MostrarMontoPorMoneda()
+{
+	//await CargarMonedas();
+	let Card = '';	
+	await CargarTransaccionesUsuario();
+	dqs('ListaMonedas').innerHTML = '';
+	console.log(arrMonedas)
+	arrMonedas.forEach(moneda => {
+		
+		let MontoFinal = 0;
+		
+		transaccionesUsr.filter(transaccion => transaccion.moneda == moneda.id && transaccion.tipo_operacion == 1).forEach(transaccionmon => {
+		
+			
+			MontoFinal += (transaccionmon.cantidad * transaccionmon.valor_actual);
+		
+		
+		});
+		document.querySelector('#ListaMonedas').innerHTML += ` 
+		<ion-item>
+			<ion-avatar slot="start">
+				<img src="${URL_IMG}${moneda.imagen}" />
+			</ion-avatar>
+			<ion-label>
+				<h2>${moneda.nombre}</h2>
+				<div style="display:flex"> 
+					<h3>TotalInvertido:</h3>
+					<p style="margin-left:5px;">${MontoFinal}</p>
+				</div>
+			</ion-label>
+		</ion-item>`
+	});
+
+}
 

@@ -32,6 +32,8 @@
 			<ion-route url="/transacciones" component="page-transacciones"></ion-route>
             <ion-route url="/info" component="page-info"></ion-route>
             <ion-route url="/info/mapausr" component="page-mapausr"></ion-route>
+            <ion-route url="/info/montofinal" component="page-montofinal"></ion-route>
+            <ion-route url="/info/montopormoneda" component="page-montopormoneda"></ion-route>
         </ion-router>
         <ion-nav></ion-nav>
         <!-- MENU -->
@@ -88,7 +90,7 @@
 				</ion-item>
 				
 				<ion-button class="ion-margin" id="btn-login"expand="full">Login</ion-button>
-				<ion-button class="ion-margin" color="success" onclick="Registrarse()" expand="full">Registrarse</ion-button>
+				<ion-button class="ion-margin" color="success" href="/registro" expand="full">Registrarse</ion-button>
             </ion-content>
         </page-login>
 
@@ -222,20 +224,22 @@
 
             <ion-content class="ion-padding">
 				<h1>Info</h1>
-                <ion-button class="ion-margin" onclick="VerMontoFinal()" expand="full">Monto Final de  Inversiones</ion-button>
+                <ion-button class="ion-margin" href="/info/montofinal" expand="full">Monto Final de  Inversiones</ion-button>
                 <ion-button class="ion-margin" color="tertiary" href="/info/mapausr" expand="full">Usuarios por Departamentos</ion-button>
-                <ion-button class="ion-margin" color="success" onclick="VerMontoByMoneda()" expand="full">Montos por Moneda</ion-button>
-            </ion-content>
-        
-            <ion-content id="Info">
-                <h1 id="TituloInfo">A</h1>
-                <ion-item id="Pepe">
-
-                </ion-item>
+                <ion-button class="ion-margin" color="success" href="/info/montopormoneda" expand="full">Montos por Moneda</ion-button>
             </ion-content>
         </page-info>
 
         <page-mapausr class="ion-page" id="MapaUsr">
+            <ion-header>
+                <ion-toolbar>
+                    <ion-buttons slot="start">
+                        <ion-menu-button></ion-menu-button>
+                    </ion-buttons>
+                    <ion-title>Usuarios Por Departamento</ion-title>
+                </ion-toolbar>
+            </ion-header>
+            
             <ion-content>
                 <div id="mapa" style=" height: 100vh;">
 
@@ -243,7 +247,33 @@
             </ion-content>
         </page-mapausr>
 
-        
+        <page-montofinal class="ion-page" id="MontoFinal">
+            <ion-header>
+                <ion-toolbar>
+                    <ion-buttons slot="start">
+                        <ion-menu-button></ion-menu-button>
+                    </ion-buttons>
+                    <ion-title>Monto Final</ion-title>
+                </ion-toolbar>
+            </ion-header>
+            <h1 id="MontoFinalTitulo">Monto Final :</h1>
+        </page-montofinal>
+
+        <page-montopormoneda class="ion-page" id="montopormoneda">
+            <ion-header>
+                <ion-toolbar>
+                    <ion-buttons slot="start">
+                        <ion-menu-button></ion-menu-button>
+                    </ion-buttons>
+                    <ion-title>Listado de monto por Moneda</ion-title>
+                </ion-toolbar>
+            </ion-header>
+            <ion-content>
+                <ion-list id="ListaMonedas"></ion-list>
+            </ion-content>
+            
+
+        </page-montopormoneda>
 
     </ion-app>
     <script src="js/codigo.js"></script>
