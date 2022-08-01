@@ -471,17 +471,23 @@ async function confirm() {
 
 }
 
-function MostrarMapaUsr()
+async function MostrarMapaUsr()
 {
+	const departamentos = await getDepartamentos();
+	console.log(`departamentos: ${JSON.stringify(departamentos)}`);
+
 	var map = L.map('mapa').setView([-34.90364050627812, -56.190527957423214], 13);
 
 	L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-		attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+		attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+		maxZoom: 19
 	}).addTo(map);
 
-	L.marker([51.5, -0.09]).addTo(map)
-		.bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
-		.openPopup();
+	L.marker([-34.90364050627812, -56.190527957423214]).addTo(map)
+		.bindPopup('12')
+		.openPopup(); 
+
+
 }
 
 
@@ -489,3 +495,19 @@ function VerMontoFinal()
 {
 	dqs("TituloInfo").innerHTML = 'Monto Final de Inversiones';
 }
+
+async function getDepartamentos() {
+	try {
+		const res = await fetch(`${URL_BASE}departamentos.php`);
+		const resjson = await res.json();
+		console.log(resjson);
+		if (resjson.codigo == 200) {
+			return resjson.departamentos
+		}
+	} catch (error) {
+		console.log(error);
+	}
+
+	return []
+}
+	
