@@ -471,20 +471,23 @@ async function confirm() {
 
 }
 
-function MostrarMapaUsr()
+async function MostrarMapaUsr()
 {
-	var map = L.map('mapa').setView([-34.90364050627812, -56.190527957423214], 7);
+	await CargarDepartamentos()
+	console.log(`departamentos: ${JSON.stringify(departamentos)}`);
+
+	var map = L.map('mapa').setView([-34.90364050627812, -56.190527957423214], 13);
 
 	L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-		
-		attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+		attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+		maxZoom: 19
 	}).addTo(map);
 
-	
-
 	L.marker([-34.90364050627812, -56.190527957423214]).addTo(map)
-		.bindPopup('Pepe')
-		.openPopup();
+		.bindPopup('12')
+		.openPopup(); 
+
+
 }
 
 
@@ -492,3 +495,6 @@ function VerMontoFinal()
 {
 	dqs("TituloInfo").innerHTML = 'Monto Final de Inversiones';
 }
+
+
+
