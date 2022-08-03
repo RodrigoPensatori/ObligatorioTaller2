@@ -15,10 +15,35 @@ const MONTOPORMONEDA = document.querySelector('#montopormoneda');
 let arrDepartamentos = [];
 let arrMonedas = [];
 let transaccionesUsr = [];
+let loading = null;
 Inicio();
 
+
+var createLoading = async () => {
+	loading  = await loadingController.create({
+	
+	});
+	
+	loading.present();
+  }
+
+  var showLoading = async () => {
+	
+		loading  = await loadingController.create({
+	
+		});	
+		loading.present();
+	}
+	
+  var DismissLoading = async () => {
+	
+	loading.dismiss();
+  }
+
+
 function Inicio() {
-  Eventos();
+	  
+	Eventos();
   ArmarMenuOpciones();
 }
 
@@ -52,7 +77,7 @@ function tdLogin() {
 async function Loguear(usuario, password) {
 	if(usuario && password)
     {
-
+	showLoading();
 	let dto = new Object();
 	dto.usuario = usuario;
 	dto.password = password;
@@ -75,12 +100,15 @@ async function Loguear(usuario, password) {
 				ArmarMenuOpciones();
 				await toast('success','Logeado con éxito.')
 				NAV.push("page-monedas");
+				DismissLoading();
                 break;
             case 409:
-                Alerta('Error','Usuario o Contraseña invalido.');
+				DismissLoading();
+                toast('warning','Usuario o Contraseña invalido.');
 
             default:
-                Alerta('Error','Error Inesperado.')
+				DismissLoading();
+                toast('warning','Error Inesperado.')
                 break;
         }
 
@@ -90,7 +118,7 @@ async function Loguear(usuario, password) {
         }
 
 	}else{
- 		 Alertar('Error',"Datos inválidos",'Ingrese Todos los Datos.')
+ 		 toast('warning',"Datos inválidos",'Ingrese Todos los Datos.')
 	}
 }
 
@@ -332,6 +360,7 @@ async function CrearUsr()
     if(Usr && Psw && Departamento && City )
     {
         try {
+			showLoading();
             const res = await fetch(`${URL_BASE}usuarios.php`,
         {
             method:'POST',
@@ -344,9 +373,16 @@ async function CrearUsr()
         console.log(resjson);
         if(resjson.codigo == 200)
         {
+			DismissLoading();
             toast("success",'Usuario creado con éxito.');
 			NAV.push('page-login')
         }
+		else
+		{
+			DismissLoading()
+			toast("warning",resjson.mensaje)
+			
+		}
         } catch (error) {
             console.log(error);
         }
@@ -355,7 +391,7 @@ async function CrearUsr()
     }
     else
     {
-        Alerta('Error','Ingrese Todos los Datos');
+        toast('warning','Ingrese Todos los Datos');
     }
 
     
@@ -371,7 +407,7 @@ async function CargarComboMoneda(slc){
 }
 
 async function CargarTransaccionesUsuario() {
-	//showLoading()
+	showLoading()
 	try {
 		const res = await fetch(`${URL_BASE}/transacciones.php?idUsuario=${localStorage.getItem('UsuarioId')}`, {
 			method: "GET",
@@ -424,6 +460,7 @@ async function CargarTransaccionesUsuario() {
 							</ion-label>
 						</ion-item>`
 			});
+			DismissLoading();
 		}
 
 		dqs('listaTransacciones').innerHTML = listaTransacciones;
@@ -453,6 +490,7 @@ async function confirm() {
 
 	
 	if (tipoOperacion && monedaNuevaTransaccion && cantidad) {
+		showLoading();
 		const dto = new Object()
 		dto.idUsuario = localStorage.getItem("UsuarioId");
 		dto.tipoOperacion = tipoOperacion
@@ -479,19 +517,21 @@ async function confirm() {
 			modal.dismiss()
 			dqs('listaTransacciones').innerHTML = '';
 			CargarTransaccionesUsuario();
+			DismissLoading();
 
         }
         } catch (error) {
             console.log(error);
         }
     }else{
-        Alerta('Error','Ingrese Todos los Datos');
+        toast('warning','Ingrese Todos los Datos');
     }
 
 }
 
 async function MostrarMapaUsr()
 {
+	showLoading();
 	await CargarDepartamentos()
 	const usuarios = await CargarUsrDepartamentos();
 	
@@ -511,7 +551,7 @@ async function MostrarMapaUsr()
 		.openPopup(); 
 	});
 
-	
+	DismissLoading();
 
 
 }
